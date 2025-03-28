@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
@@ -80,6 +81,21 @@ class MemberRepositoryTest {
             assertThat(member.getUsername()).isEqualTo(username);
         }
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void findMemberDto() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        String username = "AAA";
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<MemberDto> memberDto = memberRepository.findMemberDto();
+        for (MemberDto dto : memberDto) {
+            assertThat(dto.getUsername()).isEqualTo(username);
+        }
+        assertThat(memberDto.size()).isEqualTo(2);
     }
 
 }
