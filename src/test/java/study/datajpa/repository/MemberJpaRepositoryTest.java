@@ -1,5 +1,6 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ class MemberJpaRepositoryTest {
 
     @Autowired
     MemberJpaRepository memberJpaRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Test
     public void testMember() {
@@ -100,6 +104,23 @@ class MemberJpaRepositoryTest {
 
         assertThat(members.size()).isEqualTo(3);
         assertThat(totalCount).isEqualTo(5);
+    }
+
+    @Test
+    public void jpaEventBaseEntity() throws Exception {
+        //given
+        Member member = new Member("member1");
+        memberJpaRepository.save(member);
+
+        Thread.sleep(100);
+        member.setUsername("member2");
+        entityManager.flush();
+        entityManager.clear();
+
+        Member findMember = memberJpaRepository.findById(member.getId()).get();
+        //then
+        System.out.println("findMember.createdDate = " + findMember.getCreatedDate());
+        System.out.println("findMember.updatedDate = " + findMember.getUpdatedDate());
     }
 
 }
